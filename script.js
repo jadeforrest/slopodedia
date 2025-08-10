@@ -3,7 +3,7 @@
 class Slopopedia {
     constructor() {
         this.pages = this.loadPages();
-        this.currentSession = 8; // Claude sessions that have committed changes
+        this.currentSession = 9; // Claude sessions that have committed changes
         this.init();
     }
 
@@ -286,14 +286,24 @@ class Slopopedia {
     }
 
     createPage(title, content, excerpt = null) {
+        const timestamp = new Date().toISOString();
         const page = {
             id: Date.now().toString(),
             title,
             content,
             excerpt,
-            created: new Date().toISOString(),
-            updated: new Date().toISOString(),
-            links: []
+            created: timestamp,
+            updated: timestamp,
+            links: [],
+            currentVersion: 1,
+            history: [{
+                version: 1,
+                title,
+                content,
+                excerpt,
+                updated: timestamp,
+                changes: "Initial version"
+            }]
         };
 
         this.pages.push(page);
@@ -305,11 +315,41 @@ class Slopopedia {
     updatePage(pageId, updates) {
         const pageIndex = this.pages.findIndex(p => p.id === pageId);
         if (pageIndex !== -1) {
-            this.pages[pageIndex] = {
-                ...this.pages[pageIndex],
-                ...updates,
-                updated: new Date().toISOString()
+            const currentPage = this.pages[pageIndex];
+            const timestamp = new Date().toISOString();
+            
+            // Initialize history if it doesn't exist
+            if (!currentPage.history) {
+                currentPage.history = [{
+                    version: 1,
+                    title: currentPage.title,
+                    content: currentPage.content,
+                    excerpt: currentPage.excerpt,
+                    updated: currentPage.created,
+                    changes: "Initial version"
+                }];
+            }
+            
+            // Create new version entry
+            const newVersion = {
+                version: currentPage.history.length + 1,
+                title: updates.title || currentPage.title,
+                content: updates.content || currentPage.content,
+                excerpt: updates.excerpt || currentPage.excerpt,
+                updated: timestamp,
+                changes: updates.changes || "Updated content"
             };
+            
+            currentPage.history.push(newVersion);
+            
+            // Update the main page content
+            this.pages[pageIndex] = {
+                ...currentPage,
+                ...updates,
+                updated: timestamp,
+                currentVersion: newVersion.version
+            };
+            
             this.savePages();
             this.renderPages();
             return this.pages[pageIndex];
@@ -381,6 +421,8 @@ class Slopopedia {
             
             // Update page content
             const pageContent = document.getElementById('page-content');
+            const hasHistory = page.history && page.history.length > 1;
+            
             pageContent.innerHTML = `
                 <article class="page-article">
                     <header>
@@ -394,11 +436,34 @@ class Slopopedia {
                             <span>Created: ${new Date(page.created).toLocaleDateString()}</span>
                             <span>Updated: ${new Date(page.updated).toLocaleDateString()}</span>
                             <span>Links: ${page.links ? page.links.length : 0}</span>
+                            ${hasHistory ? `<span>Version: ${page.currentVersion || page.history.length}</span>` : ''}
                         </div>
+                        ${hasHistory ? `
+                        <div class="version-controls">
+                            <button id="toggle-history" class="history-button">View History (${page.history.length} versions)</button>
+                        </div>
+                        ` : ''}
                     </header>
                     <div class="page-body">
                         ${page.content}
                     </div>
+                    ${hasHistory ? `
+                    <aside id="page-history" class="page-history" style="display: none;">
+                        <h3>Page History</h3>
+                        <div class="history-list">
+                            ${page.history.slice().reverse().map(version => `
+                                <div class="history-item ${version.version === (page.currentVersion || page.history.length) ? 'current-version' : ''}" data-version="${version.version}">
+                                    <div class="version-header">
+                                        <strong>Version ${version.version}</strong>
+                                        <span class="version-date">${new Date(version.updated).toLocaleString()}</span>
+                                    </div>
+                                    <div class="version-changes">${version.changes}</div>
+                                    <button class="view-version-btn" data-version="${version.version}">View This Version</button>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </aside>
+                    ` : ''}
                 </article>
             `;
             
@@ -410,6 +475,65 @@ class Slopopedia {
                     setTimeout(() => this.filterByTag(tagName), 100);
                 });
             });
+            
+            // Add history toggle functionality
+            const historyToggle = document.getElementById('toggle-history');
+            const historySection = document.getElementById('page-history');
+            if (historyToggle && historySection) {
+                historyToggle.addEventListener('click', () => {
+                    const isHidden = historySection.style.display === 'none';
+                    historySection.style.display = isHidden ? 'block' : 'none';
+                    historyToggle.textContent = isHidden ? 
+                        `Hide History` : 
+                        `View History (${page.history.length} versions)`;
+                });
+                
+                // Add version view functionality
+                document.querySelectorAll('.view-version-btn').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        const versionNum = parseInt(btn.getAttribute('data-version'));
+                        this.viewPageVersion(pageId, versionNum);
+                    });
+                });
+            }
+        }
+    }
+
+    viewPageVersion(pageId, versionNumber) {
+        const page = this.pages.find(p => p.id === pageId);
+        if (page && page.history) {
+            const version = page.history.find(v => v.version === versionNumber);
+            if (version) {
+                // Show the page view section with historical content
+                this.showSection('page-view');
+                
+                const pageContent = document.getElementById('page-content');
+                pageContent.innerHTML = `
+                    <article class="page-article version-view">
+                        <div class="version-notice">
+                            <span>📖 Viewing Version ${version.version} from ${new Date(version.updated).toLocaleString()}</span>
+                            <button id="return-to-current" class="return-btn">Return to Current Version</button>
+                        </div>
+                        <header>
+                            <h1>${version.title}</h1>
+                            <div class="page-meta">
+                                <span>Version: ${version.version}</span>
+                                <span>Date: ${new Date(version.updated).toLocaleDateString()}</span>
+                                <span>Changes: ${version.changes}</span>
+                            </div>
+                        </header>
+                        <div class="page-body">
+                            ${version.content}
+                        </div>
+                    </article>
+                `;
+                
+                // Add return to current version functionality
+                document.getElementById('return-to-current').addEventListener('click', () => {
+                    this.viewPage(pageId);
+                });
+            }
         }
     }
 

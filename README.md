@@ -35,7 +35,9 @@ None currently identified.
 
 ## Next Session Ideas
 
-- Add page history/versioning
+- Add page editing functionality via UI (currently only available through console API)
+- Implement page diff view to compare versions
+- Add export functionality for individual pages or entire wiki
 
 ## Architecture
 
