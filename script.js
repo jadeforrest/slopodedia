@@ -3,7 +3,7 @@
 class Slopopedia {
     constructor() {
         this.pages = this.loadPages();
-        this.currentSession = this.loadSessionCount();
+        this.currentSession = 2; // Claude sessions that have committed changes
         this.init();
     }
 
@@ -70,12 +70,6 @@ class Slopopedia {
         this.savePages();
     }
 
-    loadSessionCount() {
-        const saved = localStorage.getItem('slopopedia-session-count');
-        const count = saved ? parseInt(saved) : 1;
-        localStorage.setItem('slopopedia-session-count', (count + 1).toString());
-        return count;
-    }
 
     updateSessionInfo() {
         const sessionElement = document.querySelector('footer p');
@@ -223,7 +217,6 @@ class Slopopedia {
 
     dev_reset() {
         localStorage.removeItem('slopopedia-pages');
-        localStorage.removeItem('slopopedia-session-count');
         location.reload();
     }
 }
