@@ -1,3 +1,4 @@
 - Commit to git after every session
 - We don't need functionality in the wiki to create pages, as Claude Code is the main loop for adding and editing content.
 - You can directly create the content by creating the page as a diff.
+- Increment the session counter in the Slopodedia constructor in script.js whenever we go through the session workflow as described in README.md
