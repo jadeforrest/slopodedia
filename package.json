@@ -1,0 +1,16 @@
+{
+  "name": "slopopedia",
+  "version": "1.0.0",
+  "description": "A recursive wiki that builds itself, one session at a time",
+  "main": "server.js",
+  "scripts": {
+    "dev": "node server.js",
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2"
+  },
+  "keywords": ["wiki", "recursive", "knowledge"],
+  "author": "Slopopedia",
+  "license": "MIT"
+}

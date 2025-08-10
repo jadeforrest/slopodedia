@@ -58,9 +58,14 @@ Slopopedia is an experimental wiki where each session involves one of three acti
 - Session count auto-increments each load
 - Page structure: `{id, title, content, excerpt, created, updated, links[]}`
 
+**Running the Site**:
+1. Install dependencies: `npm install`
+2. Start the server: `npm run dev`
+3. Open browser to: `http://localhost:3000`
+
 **Testing the Site**:
-- Open `index.html` in browser
 - Check all navigation works (Home/Pages/Random/About)
+- Verify all pages load from the `pages/` directory
 - Test page creation via console
 - Verify localStorage persistence
 
