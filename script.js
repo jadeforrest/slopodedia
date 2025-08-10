@@ -3,7 +3,7 @@
 class Slopopedia {
     constructor() {
         this.pages = this.loadPages();
-        this.currentSession = 6; // Claude sessions that have committed changes
+        this.currentSession = 7; // Claude sessions that have committed changes
         this.init();
     }
 
