@@ -3,7 +3,7 @@
 class Slopopedia {
     constructor() {
         this.pages = this.loadPages();
-        this.currentSession = 9; // Claude sessions that have committed changes
+        this.currentSession = 10; // Claude sessions that have committed changes
         this.init();
     }
 
@@ -459,6 +459,7 @@ class Slopopedia {
                                     </div>
                                     <div class="version-changes">${version.changes}</div>
                                     <button class="view-version-btn" data-version="${version.version}">View This Version</button>
+                                    ${version.version > 1 ? `<button class="compare-version-btn" data-version="${version.version}">Compare with Previous</button>` : ''}
                                 </div>
                             `).join('')}
                         </div>
@@ -494,6 +495,15 @@ class Slopopedia {
                         e.preventDefault();
                         const versionNum = parseInt(btn.getAttribute('data-version'));
                         this.viewPageVersion(pageId, versionNum);
+                    });
+                });
+                
+                // Add version compare functionality
+                document.querySelectorAll('.compare-version-btn').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        const versionNum = parseInt(btn.getAttribute('data-version'));
+                        this.comparePageVersions(pageId, versionNum, versionNum - 1);
                     });
                 });
             }
@@ -535,6 +545,124 @@ class Slopopedia {
                 });
             }
         }
+    }
+
+    comparePageVersions(pageId, newVersionNum, oldVersionNum) {
+        const page = this.pages.find(p => p.id === pageId);
+        if (page && page.history) {
+            const newVersion = page.history.find(v => v.version === newVersionNum);
+            const oldVersion = page.history.find(v => v.version === oldVersionNum);
+            
+            if (newVersion && oldVersion) {
+                // Show the page view section with diff content
+                this.showSection('page-view');
+                
+                const pageContent = document.getElementById('page-content');
+                pageContent.innerHTML = `
+                    <article class="page-article diff-view">
+                        <div class="diff-notice">
+                            <span>📋 Comparing Version ${newVersionNum} with Version ${oldVersionNum}</span>
+                            <button id="return-to-current" class="return-btn">Return to Current Version</button>
+                        </div>
+                        <header>
+                            <h1>Page Diff: ${page.title}</h1>
+                            <div class="page-meta">
+                                <span>Comparing: v${oldVersionNum} → v${newVersionNum}</span>
+                                <span>Date range: ${new Date(oldVersion.updated).toLocaleDateString()} → ${new Date(newVersion.updated).toLocaleDateString()}</span>
+                            </div>
+                        </header>
+                        <div class="diff-content">
+                            ${this.generateDiff(oldVersion, newVersion)}
+                        </div>
+                    </article>
+                `;
+                
+                // Add return to current version functionality
+                document.getElementById('return-to-current').addEventListener('click', () => {
+                    this.viewPage(pageId);
+                });
+            }
+        }
+    }
+
+    generateDiff(oldVersion, newVersion) {
+        const changes = [];
+        
+        // Compare titles
+        if (oldVersion.title !== newVersion.title) {
+            changes.push(`
+                <div class="diff-section">
+                    <h3>Title Changed</h3>
+                    <div class="diff-item">
+                        <div class="diff-old">- ${oldVersion.title}</div>
+                        <div class="diff-new">+ ${newVersion.title}</div>
+                    </div>
+                </div>
+            `);
+        }
+        
+        // Compare content - simple word-by-word diff
+        const contentDiff = this.createSimpleDiff(oldVersion.content, newVersion.content);
+        if (contentDiff.length > 0) {
+            changes.push(`
+                <div class="diff-section">
+                    <h3>Content Changes</h3>
+                    <div class="diff-content-comparison">
+                        ${contentDiff}
+                    </div>
+                </div>
+            `);
+        }
+        
+        // Show change summary
+        changes.unshift(`
+            <div class="diff-summary">
+                <h3>Change Summary</h3>
+                <div class="change-details">
+                    <strong>Version ${newVersion.version}</strong> (${new Date(newVersion.updated).toLocaleString()})<br>
+                    <em>Changes: ${newVersion.changes}</em>
+                </div>
+            </div>
+        `);
+        
+        return changes.length > 1 ? changes.join('') : `
+            <div class="diff-section">
+                <p>No significant differences detected between these versions.</p>
+            </div>
+        `;
+    }
+
+    createSimpleDiff(oldText, newText) {
+        // Simple line-by-line comparison
+        const oldLines = oldText.split('\n').filter(line => line.trim());
+        const newLines = newText.split('\n').filter(line => line.trim());
+        
+        const maxLines = Math.max(oldLines.length, newLines.length);
+        const diffHtml = [];
+        
+        for (let i = 0; i < maxLines; i++) {
+            const oldLine = oldLines[i] || '';
+            const newLine = newLines[i] || '';
+            
+            if (oldLine !== newLine) {
+                if (oldLine && !newLine) {
+                    diffHtml.push(`<div class="diff-line removed">- ${this.escapeHtml(oldLine)}</div>`);
+                } else if (!oldLine && newLine) {
+                    diffHtml.push(`<div class="diff-line added">+ ${this.escapeHtml(newLine)}</div>`);
+                } else {
+                    diffHtml.push(`<div class="diff-line removed">- ${this.escapeHtml(oldLine)}</div>`);
+                    diffHtml.push(`<div class="diff-line added">+ ${this.escapeHtml(newLine)}</div>`);
+                }
+            }
+        }
+        
+        return diffHtml.join('');
+    }
+
+    escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
     }
 
     // Development helpers - these can be called from browser console

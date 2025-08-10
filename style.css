@@ -511,6 +511,133 @@ mark {
     border: 1px solid #e5e7eb;
 }
 
+/* Diff view styles */
+.diff-notice {
+    background: linear-gradient(135deg, #f59e0b 0%, #f97316 100%);
+    color: white;
+    padding: 1rem 1.5rem;
+    border-radius: 0.75rem;
+    margin-bottom: 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 4px 6px -1px rgba(245, 158, 11, 0.1);
+}
+
+.compare-version-btn {
+    background: #f59e0b;
+    color: white;
+    border: none;
+    padding: 0.4rem 0.8rem;
+    border-radius: 0.375rem;
+    font-size: 0.8rem;
+    cursor: pointer;
+    margin-left: 0.5rem;
+    transition: all 0.2s ease;
+}
+
+.compare-version-btn:hover {
+    background: #d97706;
+    transform: translateY(-1px);
+}
+
+.diff-view .page-body {
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.5rem;
+}
+
+.diff-content {
+    padding: 1.5rem;
+}
+
+.diff-summary {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 0.5rem;
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.diff-summary h3 {
+    margin: 0 0 0.5rem 0;
+    color: #1f2937;
+}
+
+.change-details {
+    color: #4b5563;
+    font-size: 0.95rem;
+}
+
+.diff-section {
+    margin-bottom: 2rem;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.5rem;
+    overflow: hidden;
+}
+
+.diff-section h3 {
+    background: #f9fafb;
+    border-bottom: 1px solid #e5e7eb;
+    margin: 0;
+    padding: 0.75rem 1rem;
+    color: #374151;
+    font-size: 1rem;
+}
+
+.diff-item {
+    padding: 1rem;
+}
+
+.diff-old, .diff-new {
+    padding: 0.5rem;
+    margin: 0.25rem 0;
+    border-radius: 0.375rem;
+    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+    font-size: 0.9rem;
+}
+
+.diff-old {
+    background: #fef2f2;
+    border-left: 4px solid #ef4444;
+    color: #dc2626;
+}
+
+.diff-new {
+    background: #f0fdf4;
+    border-left: 4px solid #22c55e;
+    color: #16a34a;
+}
+
+.diff-content-comparison {
+    padding: 1rem;
+    background: #fafafa;
+    border-radius: 0.375rem;
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.diff-line {
+    padding: 0.25rem 0.5rem;
+    margin: 0.125rem 0;
+    border-radius: 0.25rem;
+    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+    font-size: 0.85rem;
+    line-height: 1.4;
+}
+
+.diff-line.removed {
+    background: #fef2f2;
+    color: #dc2626;
+    border-left: 3px solid #ef4444;
+}
+
+.diff-line.added {
+    background: #f0fdf4;
+    color: #16a34a;
+    border-left: 3px solid #22c55e;
+}
+
 /* Utility classes */
 .text-center { text-align: center; }
 .text-muted { color: #666; }
