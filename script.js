@@ -3,7 +3,7 @@
 class Slopopedia {
     constructor() {
         this.pages = this.loadPages();
-        this.currentSession = 10; // Claude sessions that have committed changes
+        this.currentSession = 11; // Claude sessions that have committed changes
         this.init();
     }
 
@@ -14,6 +14,7 @@ class Slopopedia {
         this.renderPages();
         this.setupRandomPage();
         this.setupSearch();
+        this.setupExport();
         this.handleInitialRoute();
         window.addEventListener('hashchange', () => this.handleRouting());
     }
@@ -80,6 +81,7 @@ class Slopopedia {
         
         if (this.pages.length === 0) {
             pagesList.innerHTML = '<p class="empty-state">No pages yet. Create the first one!</p>';
+            this.populatePageSelector(); // Update export selector even if no pages
             return;
         }
 
@@ -98,6 +100,9 @@ class Slopopedia {
                 </div>
             </div>
         `).join('');
+
+        // Update export page selector when pages change
+        this.populatePageSelector();
 
         // Add click handlers for page cards
         document.querySelectorAll('.page-card').forEach(card => {
@@ -663,6 +668,193 @@ class Slopopedia {
         const div = document.createElement('div');
         div.textContent = text;
         return div.innerHTML;
+    }
+
+    setupExport() {
+        // Set up export functionality
+        const exportAllJson = document.getElementById('export-all-json');
+        const exportAllMarkdown = document.getElementById('export-all-markdown');
+        const pageSelector = document.getElementById('page-selector');
+        const exportPageJson = document.getElementById('export-page-json');
+        const exportPageMarkdown = document.getElementById('export-page-markdown');
+
+        // Populate page selector
+        this.populatePageSelector();
+
+        // Export all pages as JSON
+        exportAllJson?.addEventListener('click', () => {
+            this.exportAllPagesJson();
+        });
+
+        // Export all pages as Markdown ZIP
+        exportAllMarkdown?.addEventListener('click', () => {
+            this.exportAllPagesMarkdown();
+        });
+
+        // Page selector change handler
+        pageSelector?.addEventListener('change', (e) => {
+            const isPageSelected = e.target.value !== '';
+            exportPageJson.disabled = !isPageSelected;
+            exportPageMarkdown.disabled = !isPageSelected;
+        });
+
+        // Export individual page handlers
+        exportPageJson?.addEventListener('click', () => {
+            const pageId = pageSelector.value;
+            if (pageId) {
+                this.exportPageJson(pageId);
+            }
+        });
+
+        exportPageMarkdown?.addEventListener('click', () => {
+            const pageId = pageSelector.value;
+            if (pageId) {
+                this.exportPageMarkdown(pageId);
+            }
+        });
+    }
+
+    populatePageSelector() {
+        const pageSelector = document.getElementById('page-selector');
+        if (!pageSelector) return;
+
+        // Clear existing options except the first
+        pageSelector.innerHTML = '<option value="">Select a page...</option>';
+        
+        // Add pages to selector
+        this.pages.forEach(page => {
+            const option = document.createElement('option');
+            option.value = page.id;
+            option.textContent = page.title;
+            pageSelector.appendChild(option);
+        });
+    }
+
+    exportAllPagesJson() {
+        const data = {
+            exportedAt: new Date().toISOString(),
+            version: '1.0',
+            sessionCount: this.currentSession,
+            pages: this.pages
+        };
+
+        this.downloadFile(
+            JSON.stringify(data, null, 2),
+            `slopopedia-all-pages-${this.formatDateForFilename()}.json`,
+            'application/json'
+        );
+    }
+
+    async exportAllPagesMarkdown() {
+        // Note: This is a simplified version that creates a single text file
+        // with all pages. A full ZIP implementation would require additional libraries
+        let markdownContent = `# Slopopedia Export\n\nExported on: ${new Date().toLocaleString()}\nSession: ${this.currentSession}\n\n---\n\n`;
+        
+        this.pages.forEach(page => {
+            markdownContent += this.pageToMarkdown(page);
+            markdownContent += '\n\n---\n\n';
+        });
+
+        this.downloadFile(
+            markdownContent,
+            `slopopedia-all-pages-${this.formatDateForFilename()}.md`,
+            'text/markdown'
+        );
+    }
+
+    exportPageJson(pageId) {
+        const page = this.pages.find(p => p.id === pageId);
+        if (!page) return;
+
+        const data = {
+            exportedAt: new Date().toISOString(),
+            version: '1.0',
+            page: page
+        };
+
+        this.downloadFile(
+            JSON.stringify(data, null, 2),
+            `slopopedia-${this.slugify(page.title)}-${this.formatDateForFilename()}.json`,
+            'application/json'
+        );
+    }
+
+    exportPageMarkdown(pageId) {
+        const page = this.pages.find(p => p.id === pageId);
+        if (!page) return;
+
+        const markdownContent = this.pageToMarkdown(page);
+
+        this.downloadFile(
+            markdownContent,
+            `slopopedia-${this.slugify(page.title)}-${this.formatDateForFilename()}.md`,
+            'text/markdown'
+        );
+    }
+
+    pageToMarkdown(page) {
+        let markdown = `# ${page.title}\n\n`;
+        
+        if (page.excerpt) {
+            markdown += `*${page.excerpt}*\n\n`;
+        }
+
+        // Convert HTML content to markdown (basic conversion)
+        let content = page.content;
+        
+        // Convert basic HTML tags to markdown
+        content = content.replace(/<h([1-6])>(.*?)<\/h[1-6]>/g, (match, level, text) => {
+            return '#'.repeat(parseInt(level)) + ' ' + text + '\n';
+        });
+        content = content.replace(/<p>(.*?)<\/p>/g, '$1\n\n');
+        content = content.replace(/<strong>(.*?)<\/strong>/g, '**$1**');
+        content = content.replace(/<em>(.*?)<\/em>/g, '*$1*');
+        content = content.replace(/<ul>/g, '').replace(/<\/ul>/g, '\n');
+        content = content.replace(/<li>(.*?)<\/li>/g, '- $1\n');
+        content = content.replace(/<br\s*\/?>/g, '\n');
+        
+        // Remove any remaining HTML tags
+        content = content.replace(/<[^>]*>/g, '');
+        
+        markdown += content;
+        
+        // Add metadata
+        markdown += `\n\n---\n\n`;
+        markdown += `**Metadata:**\n`;
+        markdown += `- Created: ${new Date(page.created).toLocaleString()}\n`;
+        markdown += `- Updated: ${new Date(page.updated).toLocaleString()}\n`;
+        markdown += `- Version: ${page.currentVersion || 1}\n`;
+        
+        if (page.links && page.links.length > 0) {
+            markdown += `- Links: ${page.links.length} connected pages\n`;
+        }
+
+        return markdown;
+    }
+
+    downloadFile(content, filename, mimeType) {
+        const blob = new Blob([content], { type: mimeType });
+        const url = URL.createObjectURL(blob);
+        
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = filename;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        
+        URL.revokeObjectURL(url);
+    }
+
+    formatDateForFilename() {
+        return new Date().toISOString().split('T')[0];
+    }
+
+    slugify(text) {
+        return text
+            .toLowerCase()
+            .replace(/[^a-z0-9]+/g, '-')
+            .replace(/^-+|-+$/g, '');
     }
 
     // Development helpers - these can be called from browser console

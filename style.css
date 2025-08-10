@@ -638,6 +638,85 @@ mark {
     border-left: 3px solid #22c55e;
 }
 
+/* Export section styles */
+.export-options {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    margin-top: 2rem;
+}
+
+.export-card {
+    background: #f8fafc;
+    border: 2px solid #e2e8f0;
+    border-radius: 0.75rem;
+    padding: 2rem;
+    text-align: center;
+    transition: all 0.2s ease;
+}
+
+.export-card:hover {
+    border-color: #3b82f6;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.export-card h3 {
+    margin: 0 0 1rem 0;
+    color: #1f2937;
+    font-size: 1.25rem;
+}
+
+.export-card p {
+    color: #6b7280;
+    margin-bottom: 1.5rem;
+    font-size: 0.95rem;
+    line-height: 1.5;
+}
+
+.export-btn {
+    background: #3b82f6;
+    color: white;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    font-weight: 500;
+    transition: background 0.2s ease;
+    margin: 0.25rem;
+}
+
+.export-btn:hover:not(:disabled) {
+    background: #2563eb;
+}
+
+.export-btn:disabled {
+    background: #9ca3af;
+    cursor: not-allowed;
+}
+
+#page-selector {
+    width: 100%;
+    padding: 0.75rem;
+    border: 2px solid #e2e8f0;
+    border-radius: 0.5rem;
+    margin-bottom: 1rem;
+    font-size: 0.95rem;
+    background: white;
+}
+
+#page-selector:focus {
+    outline: none;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.individual-export-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
 /* Utility classes */
 .text-center { text-align: center; }
 .text-muted { color: #666; }

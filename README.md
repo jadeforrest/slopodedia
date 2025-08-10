@@ -35,7 +35,7 @@ None currently identified.
 
 ## Next Session Ideas
 
-- Add export functionality for individual pages or entire wiki
+None currently identified.
 
 ## Architecture
 

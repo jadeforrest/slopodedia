@@ -19,6 +19,7 @@
             <li><a href="#search" class="nav-link">Search</a></li>
             <li><a href="#random" class="nav-link">Random</a></li>
             <li><a href="#about" class="nav-link">About</a></li>
+            <li><a href="#export" class="nav-link">Export</a></li>
         </ul>
     </nav>
 
@@ -74,6 +75,37 @@
             <h2>About Slopopedia</h2>
             <p>Slopopedia is an experiment in recursive content creation. Each session builds upon the last, creating an ever-growing collection of interconnected knowledge.</p>
             <p>The name combines "slop" (internet slang for low-effort content) with "encyclopedia" - but the goal is to transcend the slop through iterative improvement and meaningful connections.</p>
+        </section>
+
+        <section id="export" class="content-section">
+            <h2>Export Data</h2>
+            <p>Export your wiki data in various formats for backup, sharing, or importing into other systems.</p>
+            
+            <div class="export-options">
+                <div class="export-card">
+                    <h3>📄 Export All Pages (JSON)</h3>
+                    <p>Complete data export including content, metadata, history, and links.</p>
+                    <button id="export-all-json" class="export-btn">Download All Pages (JSON)</button>
+                </div>
+                
+                <div class="export-card">
+                    <h3>📝 Export All Pages (Markdown)</h3>
+                    <p>Export all pages as individual markdown files in a ZIP archive.</p>
+                    <button id="export-all-markdown" class="export-btn">Download All Pages (Markdown ZIP)</button>
+                </div>
+                
+                <div class="export-card">
+                    <h3>🗂️ Export Individual Page</h3>
+                    <p>Export a specific page in your preferred format.</p>
+                    <select id="page-selector">
+                        <option value="">Select a page...</option>
+                    </select>
+                    <div class="individual-export-buttons">
+                        <button id="export-page-json" class="export-btn" disabled>JSON</button>
+                        <button id="export-page-markdown" class="export-btn" disabled>Markdown</button>
+                    </div>
+                </div>
+            </div>
         </section>
     </main>
 
