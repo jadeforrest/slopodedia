@@ -7,10 +7,10 @@ class Slopopedia {
         this.init();
     }
 
-    async init() {
+    init() {
         this.setupNavigation();
         this.updateSessionInfo();
-        await this.loadFileBasedPages();
+        this.loadFileBasedPages();
         this.renderPages();
         this.setupRandomPage();
     }
@@ -46,25 +46,35 @@ class Slopopedia {
         localStorage.setItem('slopopedia-pages', JSON.stringify(this.pages));
     }
 
-    async loadFileBasedPages() {
-        const pageFiles = ['the-recursive-loop.json', 'emergence.json'];
-        
-        for (const filename of pageFiles) {
-            try {
-                const response = await fetch(`pages/${filename}`);
-                if (response.ok) {
-                    const pageData = await response.json();
-                    
-                    // Check if page already exists in localStorage (avoid duplicates)
-                    const existingPage = this.pages.find(p => p.id === pageData.id);
-                    if (!existingPage) {
-                        this.pages.push(pageData);
-                    }
-                }
-            } catch (error) {
-                console.log(`Could not load page file: ${filename}`);
+    loadFileBasedPages() {
+        const staticPages = [
+            {
+                "id": "recursive-loop-001",
+                "title": "The Recursive Loop",
+                "content": "<p>A recursive loop is a self-referential process where the output becomes the input for the next iteration. This fundamental concept appears throughout nature, mathematics, and human systems.</p><p><strong>Examples in Nature:</strong></p><ul><li>Fractals like the Mandelbrot set, where each zoom reveals similar patterns</li><li>Population dynamics where current population affects future growth</li><li>Evolution itself - organisms shape their environment, which shapes future organisms</li></ul><p><strong>In Human Systems:</strong></p><ul><li>Markets where investor behavior affects prices, which affects behavior</li><li>Learning loops where knowledge enables better learning strategies</li><li>Cultural evolution where ideas shape minds that create new ideas</li></ul><p>Slopopedia itself is a recursive loop - each session builds upon previous sessions, creating an ever-evolving knowledge base that informs future development.</p><p>The power of recursive loops lies in their potential for <a href='#emergence'>emergence</a> - simple rules repeated can create complex, unpredictable behaviors and structures.</p>",
+                "excerpt": "Self-referential processes where output becomes input, driving evolution and complexity in nature and human systems.",
+                "created": "2025-08-10T12:00:00.000Z",
+                "updated": "2025-08-10T12:00:00.000Z",
+                "links": ["emergence-001"]
+            },
+            {
+                "id": "emergence-001",
+                "title": "Emergence",
+                "content": "<p>Emergence is the phenomenon where complex systems and patterns arise from the interaction of simpler components. The whole becomes greater than the sum of its parts, exhibiting properties that cannot be predicted from understanding the individual elements alone.</p><p><strong>Types of Emergence:</strong></p><ul><li><strong>Weak Emergence:</strong> Complex behavior arising from simple rules (like Conway's Game of Life)</li><li><strong>Strong Emergence:</strong> Genuinely novel properties that cannot be reduced to component interactions</li></ul><p><strong>Examples Across Scales:</strong></p><ul><li><strong>Consciousness</strong> emerging from neural networks</li><li><strong>Life</strong> emerging from chemical reactions</li><li><strong>Markets</strong> emerging from individual transactions</li><li><strong>Culture</strong> emerging from human interactions</li><li><strong>Intelligence</strong> emerging from learning algorithms</li></ul><p>Emergence often results from <a href='#the-recursive-loop'>recursive loops</a> where local interactions create global patterns, which then influence future local interactions.</p><p>In Slopopedia, we might expect emergent themes and connections to develop as pages accumulate - patterns that weren't explicitly planned but arise from the recursive process of creation and improvement.</p>",
+                "excerpt": "Complex systems and patterns arising from simpler components, creating properties greater than the sum of their parts.",
+                "created": "2025-08-10T12:15:00.000Z",
+                "updated": "2025-08-10T12:15:00.000Z",
+                "links": ["recursive-loop-001"]
             }
-        }
+        ];
+        
+        staticPages.forEach(pageData => {
+            // Check if page already exists in localStorage (avoid duplicates)
+            const existingPage = this.pages.find(p => p.id === pageData.id);
+            if (!existingPage) {
+                this.pages.push(pageData);
+            }
+        });
         
         // Save merged pages to localStorage
         this.savePages();
