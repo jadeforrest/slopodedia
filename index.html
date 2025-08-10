@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Slopopedia - A Recursive Wiki</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <h1>🌀 Slopopedia</h1>
+        <p class="tagline">A recursive wiki that builds itself, one session at a time</p>
+    </header>
+
+    <nav class="main-nav">
+        <ul>
+            <li><a href="#home" class="nav-link active">Home</a></li>
+            <li><a href="#pages" class="nav-link">Pages</a></li>
+            <li><a href="#random" class="nav-link">Random</a></li>
+            <li><a href="#about" class="nav-link">About</a></li>
+        </ul>
+    </nav>
+
+    <main>
+        <section id="home" class="content-section active">
+            <div class="welcome-box">
+                <h2>Welcome to Slopopedia</h2>
+                <p>This is a self-evolving wiki where each session involves one of three activities:</p>
+                <ol>
+                    <li><strong>Create</strong> a new page with interesting content</li>
+                    <li><strong>Improve</strong> an existing page with better content or links</li>
+                    <li><strong>Enhance</strong> the site itself with new features or improvements</li>
+                </ol>
+                <p>Every session, the wiki grows and evolves. What will emerge from this recursive process?</p>
+            </div>
+        </section>
+
+        <section id="pages" class="content-section">
+            <h2>All Pages</h2>
+            <div id="pages-list">
+                <p class="empty-state">No pages yet. Create the first one!</p>
+            </div>
+        </section>
+
+        <section id="random" class="content-section">
+            <h2>Random Page</h2>
+            <div id="random-content">
+                <p class="empty-state">No pages available for random selection.</p>
+            </div>
+        </section>
+
+        <section id="about" class="content-section">
+            <h2>About Slopopedia</h2>
+            <p>Slopopedia is an experiment in recursive content creation. Each session builds upon the last, creating an ever-growing collection of interconnected knowledge.</p>
+            <p>The name combines "slop" (internet slang for low-effort content) with "encyclopedia" - but the goal is to transcend the slop through iterative improvement and meaningful connections.</p>
+        </section>
+    </main>
+
+    <footer>
+        <p>Session #{SESSION_COUNT} • Last updated: <span id="last-updated"></span></p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
