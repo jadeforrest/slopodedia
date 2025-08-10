@@ -76,17 +76,32 @@ main {
 }
 
 .welcome-box {
-    background: white;
-    padding: 2rem;
-    border-radius: 8px;
-    box-shadow: 0 2px 15px rgba(0,0,0,0.1);
-    margin-bottom: 2rem;
+    background: linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(248,250,252,0.95) 100%);
+    padding: 2.5rem;
+    border-radius: 16px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.08);
+    margin-bottom: 2.5rem;
+    border: 1px solid rgba(102, 126, 234, 0.1);
+    position: relative;
+    overflow: hidden;
+}
+
+.welcome-box::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
 }
 
 .welcome-box h2 {
-    color: #667eea;
-    margin-bottom: 1rem;
-    font-size: 1.8rem;
+    color: #2d3748;
+    margin-bottom: 1.25rem;
+    font-size: 2rem;
+    font-weight: 700;
+    line-height: 1.2;
 }
 
 .welcome-box ol {
@@ -115,27 +130,49 @@ main {
 
 .page-card {
     background: white;
-    padding: 1.5rem;
-    border-radius: 8px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-    transition: transform 0.2s ease, shadow 0.2s ease;
+    padding: 1.75rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    transition: all 0.3s ease;
     border-left: 4px solid #667eea;
+    position: relative;
+    overflow: hidden;
 }
 
 .page-card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+    transform: translateY(-4px);
+    box-shadow: 0 8px 35px rgba(0,0,0,0.12);
+}
+
+.page-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.page-card:hover::before {
+    opacity: 1;
 }
 
 .page-card h3 {
-    color: #667eea;
-    margin-bottom: 0.5rem;
-    font-size: 1.3rem;
+    color: #2d3748;
+    margin-bottom: 0.75rem;
+    font-size: 1.35rem;
+    font-weight: 600;
+    line-height: 1.3;
 }
 
 .page-card p {
-    color: #666;
-    margin-bottom: 1rem;
+    color: #4a5568;
+    margin-bottom: 1.25rem;
+    line-height: 1.6;
+    font-size: 0.98rem;
 }
 
 .page-meta {
@@ -850,6 +887,213 @@ mark {
         top: auto;
         left: auto;
         margin-top: 1rem;
+    }
+}
+
+/* Page content styling improvements */
+.page-body {
+    background: white;
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 25px rgba(0,0,0,0.08);
+    margin-bottom: 2rem;
+    line-height: 1.8;
+    font-size: 1.05rem;
+    color: #2d3748;
+}
+
+.page-body h1 {
+    color: #1a202c;
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+    line-height: 1.2;
+    border-bottom: 3px solid #667eea;
+    padding-bottom: 1rem;
+}
+
+.page-body h2 {
+    color: #2d3748;
+    font-size: 1.75rem;
+    font-weight: 600;
+    margin-top: 2.5rem;
+    margin-bottom: 1.25rem;
+    line-height: 1.3;
+    position: relative;
+}
+
+.page-body h2::before {
+    content: '';
+    position: absolute;
+    left: -1rem;
+    top: 0.5rem;
+    width: 4px;
+    height: 1.5rem;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 2px;
+}
+
+.page-body h3 {
+    color: #4a5568;
+    font-size: 1.4rem;
+    font-weight: 600;
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+    line-height: 1.3;
+}
+
+.page-body p {
+    margin-bottom: 1.5rem;
+    text-align: justify;
+    hyphens: auto;
+}
+
+.page-body p:first-of-type {
+    font-size: 1.15rem;
+    color: #4a5568;
+    font-weight: 500;
+    margin-bottom: 2rem;
+    padding-left: 1rem;
+    border-left: 4px solid #667eea;
+    background: linear-gradient(90deg, rgba(102, 126, 234, 0.05) 0%, transparent 100%);
+    padding: 1rem;
+    border-radius: 0 8px 8px 0;
+}
+
+.page-body strong {
+    color: #2d3748;
+    font-weight: 700;
+}
+
+.page-body em {
+    font-style: italic;
+    color: #4a5568;
+}
+
+.page-body ul, .page-body ol {
+    margin: 1.5rem 0;
+    padding-left: 2rem;
+}
+
+.page-body li {
+    margin-bottom: 0.75rem;
+    line-height: 1.7;
+}
+
+.page-body li p {
+    margin-bottom: 0.75rem;
+}
+
+.page-body a {
+    color: #667eea;
+    text-decoration: none;
+    font-weight: 500;
+    border-bottom: 1px solid transparent;
+    transition: all 0.2s ease;
+    padding: 0.1em 0.2em;
+    border-radius: 3px;
+}
+
+.page-body a:hover {
+    color: #5a67d8;
+    background: rgba(102, 126, 234, 0.1);
+    border-bottom-color: #667eea;
+}
+
+.page-body blockquote {
+    margin: 2rem 0;
+    padding: 1.5rem 2rem;
+    background: #f7fafc;
+    border-left: 5px solid #667eea;
+    border-radius: 0 8px 8px 0;
+    font-style: italic;
+    color: #4a5568;
+    position: relative;
+}
+
+.page-body blockquote::before {
+    content: '"';
+    position: absolute;
+    top: -0.5rem;
+    left: 0.5rem;
+    font-size: 4rem;
+    color: #667eea;
+    opacity: 0.3;
+    font-family: Georgia, serif;
+}
+
+.page-body code {
+    background: #f1f5f9;
+    color: #e53e3e;
+    padding: 0.2em 0.5em;
+    border-radius: 4px;
+    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+    font-size: 0.9em;
+    border: 1px solid #e2e8f0;
+}
+
+.page-body pre {
+    background: #1a202c;
+    color: #e2e8f0;
+    padding: 1.5rem;
+    border-radius: 8px;
+    overflow-x: auto;
+    margin: 1.5rem 0;
+    border: 1px solid #2d3748;
+}
+
+.page-body pre code {
+    background: none;
+    color: inherit;
+    padding: 0;
+    border: none;
+    font-size: 0.95em;
+}
+
+/* Enhanced readability improvements */
+.page-body {
+    max-width: none;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+}
+
+.page-body p + h2,
+.page-body p + h3 {
+    margin-top: 3rem;
+}
+
+.page-body h2 + p,
+.page-body h3 + p {
+    margin-top: 1rem;
+}
+
+/* Print styles for better readability */
+@media print {
+    .page-body {
+        box-shadow: none;
+        padding: 1rem;
+        font-size: 12pt;
+        line-height: 1.6;
+    }
+    
+    .page-body h1 {
+        font-size: 18pt;
+        page-break-after: avoid;
+    }
+    
+    .page-body h2 {
+        font-size: 16pt;
+        page-break-after: avoid;
+    }
+    
+    .page-body h3 {
+        font-size: 14pt;
+        page-break-after: avoid;
+    }
+    
+    .page-body a {
+        color: #000;
+        text-decoration: underline;
     }
 }
 

@@ -31,7 +31,7 @@ Slopopedia is an experimental wiki which recursively adds, improves, or alters c
 
 ## Issues to address
 
-None currently identified.
+1. The version history of the files isn't working. I don't mind if we rip out that feature completely. Or we should fix it. Your choice.
 
 ## Next Session Ideas
 
