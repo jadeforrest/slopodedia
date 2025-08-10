@@ -13,28 +13,13 @@ class Slopopedia {
         this.loadFileBasedPages();
         this.renderPages();
         this.setupRandomPage();
+        this.handleInitialRoute();
+        window.addEventListener('hashchange', () => this.handleRouting());
     }
 
     setupNavigation() {
-        const navLinks = document.querySelectorAll('.nav-link');
-        const contentSections = document.querySelectorAll('.content-section');
-
-        navLinks.forEach(link => {
-            link.addEventListener('click', (e) => {
-                e.preventDefault();
-                const targetId = link.getAttribute('href').substring(1);
-                
-                // Update active nav
-                navLinks.forEach(l => l.classList.remove('active'));
-                link.classList.add('active');
-                
-                // Update active content
-                contentSections.forEach(section => {
-                    section.classList.remove('active');
-                });
-                document.getElementById(targetId).classList.add('active');
-            });
-        });
+        // Navigation is now handled by the routing system
+        // Hash changes will trigger handleRouting()
     }
 
     loadPages() {
@@ -120,7 +105,7 @@ class Slopopedia {
         document.querySelectorAll('.page-card').forEach(card => {
             card.addEventListener('click', () => {
                 const pageId = card.getAttribute('data-page-id');
-                this.viewPage(pageId);
+                window.location.hash = `page/${pageId}`;
             });
         });
     }
@@ -208,11 +193,67 @@ class Slopopedia {
         );
     }
 
+    handleInitialRoute() {
+        this.handleRouting();
+    }
+
+    handleRouting() {
+        const hash = window.location.hash;
+        
+        if (hash.startsWith('#page/')) {
+            const pageId = hash.replace('#page/', '');
+            this.viewPage(pageId);
+        } else {
+            // Handle standard navigation
+            const targetId = hash.substring(1) || 'home';
+            this.showSection(targetId);
+        }
+    }
+
+    showSection(sectionId) {
+        const navLinks = document.querySelectorAll('.nav-link');
+        const contentSections = document.querySelectorAll('.content-section');
+        
+        // Update active nav
+        navLinks.forEach(l => l.classList.remove('active'));
+        const activeLink = document.querySelector(`a[href="#${sectionId}"]`);
+        if (activeLink) {
+            activeLink.classList.add('active');
+        }
+        
+        // Update active content
+        contentSections.forEach(section => {
+            section.classList.remove('active');
+        });
+        const activeSection = document.getElementById(sectionId);
+        if (activeSection) {
+            activeSection.classList.add('active');
+        }
+    }
+
     viewPage(pageId) {
         const page = this.pages.find(p => p.id === pageId);
         if (page) {
-            // For now, just alert - in future sessions we might add a modal or new page view
-            alert(`Viewing: ${page.title}\n\n${page.content}`);
+            // Show the page view section
+            this.showSection('page-view');
+            
+            // Update page content
+            const pageContent = document.getElementById('page-content');
+            pageContent.innerHTML = `
+                <article class="page-article">
+                    <header>
+                        <h1>${page.title}</h1>
+                        <div class="page-meta">
+                            <span>Created: ${new Date(page.created).toLocaleDateString()}</span>
+                            <span>Updated: ${new Date(page.updated).toLocaleDateString()}</span>
+                            <span>Links: ${page.links ? page.links.length : 0}</span>
+                        </div>
+                    </header>
+                    <div class="page-body">
+                        ${page.content}
+                    </div>
+                </article>
+            `;
         }
     }
 
