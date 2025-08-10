@@ -27,6 +27,7 @@ Slopopedia is an experimental wiki which recursively adds, improves, or alters c
 - Build incrementally on previous work
 - Maintain the recursive/self-improving nature
 - Focus on making the wiki more interesting and useful
+- After doing something in the README under the Issues to Address or Next Session Ideas, remove the item from the todo list.
 
 ## Issues to address
 
@@ -34,7 +35,6 @@ None currently identified.
 
 ## Next Session Ideas
 
-- Add search functionality
 - Implement page categories or tags
 - Add page history/versioning
 
