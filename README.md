@@ -13,7 +13,7 @@ Slopopedia is an experimental wiki which recursively adds, improves, or alters c
 **Session Workflow**:
 1. Always start by reading this README.md to understand current state
 2. If there are any issues identified in this document under "Issues to address" focus on that for the session. After completion, remove the issue from the README.md file.
-3. Otherwise, choose ONE of these activities:
+3. Otherwise, choose ONE of these activities.
    - **Activity 1**: Create a new page with interesting content
    - **Activity 2**: Improve existing content (critique content, make edits, add links to existing content)
    - **Activity 3**: Enhance site (features/design/operations) from Next Session Ideas in README.md

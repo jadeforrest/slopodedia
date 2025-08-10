@@ -3,4 +3,4 @@
 - You can directly create the content by creating the page as a diff.
 - Increment the session counter in the Slopodedia constructor in script.js whenever we go through the session workflow as described in README.md
 - When we start a session, look at the README.md file to see what to do if I just "go".
-- When deciding what to do at the beginning of a session, look at the last three commits in git so as to not repeat yourself too much.
+- When deciding what to do at the beginning of a session, look at the last commit in git, and figure out what type of activity it was. Then look at Activities 1-4 and choose the next on the list, looping back to the first if it was Activity 4. So for example, if you added a new page last time (Activity 1), select Activity 2 this time. You can skip if there is nothing to do, but mention that you're skipping if you do.
