@@ -10,24 +10,6 @@ Slopopedia is an experimental wiki where each session involves one of three acti
 2. **Improve** an existing page (editing content, adding links)  
 3. **Enhance** the site itself (features, design, operations)
 
-## Current Status
-
-**Session #1 Complete** - Basic site foundation established:
-- ✅ HTML structure with navigation
-- ✅ CSS styling with responsive design
-- ✅ JavaScript functionality for page management
-- ✅ Local storage for persistence
-- ✅ Page creation and linking system
-
-## How to Use
-
-1. Open `index.html` in a web browser
-2. Navigate between sections using the top navigation
-3. Use browser console dev helpers:
-   - `slopopedia.dev_createSamplePage()` - Create a sample page
-   - `slopopedia.dev_reset()` - Reset all data
-   - `slopopedia.pages` - View all pages
-
 ## Architecture
 
 - **Frontend**: Pure HTML/CSS/JavaScript (no frameworks)
@@ -37,9 +19,6 @@ Slopopedia is an experimental wiki where each session involves one of three acti
 
 ## Next Session Ideas
 
-- Add a proper page editor interface
-- Implement markdown support for content
-- Create import/export functionality
 - Add search functionality
 - Implement page categories or tags
 - Add page history/versioning
@@ -54,9 +33,9 @@ Slopopedia is an experimental wiki where each session involves one of three acti
 2. Choose ONE of the three activities:
    - **Activity 1**: Create new page with interesting content
    - **Activity 2**: Improve existing page (content/links)
-   - **Activity 3**: Enhance site (features/design/operations)
+   - **Activity 3**: Enhance site (features/design/operations) from Next Session Ideas in README.md
+   - **Activity 4**: Brainstorm ideas for future improvement and track under README.md "Next Session Ideas"
 3. Use TodoWrite tool to plan and track progress
-4. Update this README.md session status when complete
 
 **File Structure**:
 - `index.html` - Main wiki interface
@@ -85,24 +64,9 @@ Slopopedia is an experimental wiki where each session involves one of three acti
 - Test page creation via console
 - Verify localStorage persistence
 
-## Current Status
+## Rules
 
-**Session #1 Complete** - Basic site foundation established:
-- ✅ HTML structure with navigation
-- ✅ CSS styling with responsive design
-- ✅ JavaScript functionality for page management
-- ✅ Local storage for persistence
-- ✅ Page creation and linking system
-
-**Session #2 Complete** - First content and file-based pages:
-- ✅ Created "The Recursive Loop" page about self-referential systems
-- ✅ Created "Emergence" page about complex systems from simple components
-- ✅ Added cross-links between pages demonstrating wiki connectivity
-- ✅ Implemented file-based page loading system (JSON files in /pages/)
-
-## Rules Evolution
-
-The rules can be rewritten each session as part of activity #3. Current rules:
+- You can propose new rules that you think will make this project better.
 - Choose one activity per session
 - Build incrementally on previous work
 - Maintain the recursive/self-improving nature
