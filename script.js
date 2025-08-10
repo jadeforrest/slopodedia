@@ -7,9 +7,10 @@ class Slopopedia {
         this.init();
     }
 
-    init() {
+    async init() {
         this.setupNavigation();
         this.updateSessionInfo();
+        await this.loadFileBasedPages();
         this.renderPages();
         this.setupRandomPage();
     }
@@ -43,6 +44,30 @@ class Slopopedia {
 
     savePages() {
         localStorage.setItem('slopopedia-pages', JSON.stringify(this.pages));
+    }
+
+    async loadFileBasedPages() {
+        const pageFiles = ['the-recursive-loop.json', 'emergence.json'];
+        
+        for (const filename of pageFiles) {
+            try {
+                const response = await fetch(`pages/${filename}`);
+                if (response.ok) {
+                    const pageData = await response.json();
+                    
+                    // Check if page already exists in localStorage (avoid duplicates)
+                    const existingPage = this.pages.find(p => p.id === pageData.id);
+                    if (!existingPage) {
+                        this.pages.push(pageData);
+                    }
+                }
+            } catch (error) {
+                console.log(`Could not load page file: ${filename}`);
+            }
+        }
+        
+        // Save merged pages to localStorage
+        this.savePages();
     }
 
     loadSessionCount() {

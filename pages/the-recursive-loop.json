@@ -1,0 +1,9 @@
+{
+  "id": "recursive-loop-001",
+  "title": "The Recursive Loop",
+  "content": "<p>A recursive loop is a self-referential process where the output becomes the input for the next iteration. This fundamental concept appears throughout nature, mathematics, and human systems.</p><p><strong>Examples in Nature:</strong></p><ul><li>Fractals like the Mandelbrot set, where each zoom reveals similar patterns</li><li>Population dynamics where current population affects future growth</li><li>Evolution itself - organisms shape their environment, which shapes future organisms</li></ul><p><strong>In Human Systems:</strong></p><ul><li>Markets where investor behavior affects prices, which affects behavior</li><li>Learning loops where knowledge enables better learning strategies</li><li>Cultural evolution where ideas shape minds that create new ideas</li></ul><p>Slopopedia itself is a recursive loop - each session builds upon previous sessions, creating an ever-evolving knowledge base that informs future development.</p><p>The power of recursive loops lies in their potential for <a href='#emergence'>emergence</a> - simple rules repeated can create complex, unpredictable behaviors and structures.</p>",
+  "excerpt": "Self-referential processes where output becomes input, driving evolution and complexity in nature and human systems.",
+  "created": "2025-08-10T12:00:00.000Z",
+  "updated": "2025-08-10T12:00:00.000Z",
+  "links": ["emergence-001"]
+}

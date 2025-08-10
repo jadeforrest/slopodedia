@@ -63,6 +63,7 @@ Slopopedia is an experimental wiki where each session involves one of three acti
 - `style.css` - All styling and responsive design
 - `script.js` - Wiki functionality and page management
 - `README.md` - This file (operational instructions)
+- `pages/` - Directory containing content pages as JSON files
 
 **Key JavaScript API** (accessible via browser console):
 - `slopopedia.pages` - Array of all pages
@@ -92,6 +93,12 @@ Slopopedia is an experimental wiki where each session involves one of three acti
 - ✅ JavaScript functionality for page management
 - ✅ Local storage for persistence
 - ✅ Page creation and linking system
+
+**Session #2 Complete** - First content and file-based pages:
+- ✅ Created "The Recursive Loop" page about self-referential systems
+- ✅ Created "Emergence" page about complex systems from simple components
+- ✅ Added cross-links between pages demonstrating wiki connectivity
+- ✅ Implemented file-based page loading system (JSON files in /pages/)
 
 ## Rules Evolution
 
