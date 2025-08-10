@@ -3,7 +3,7 @@
 class Slopopedia {
     constructor() {
         this.pages = this.loadPages();
-        this.currentSession = 15; // Claude sessions that have committed changes
+        this.currentSession = 16; // Claude sessions that have committed changes
         this.init();
     }
 
@@ -15,6 +15,7 @@ class Slopopedia {
         this.setupRandomPage();
         this.setupSearch();
         this.setupExport();
+        this.setupNetwork();
         this.handleInitialRoute();
         window.addEventListener('hashchange', () => this.handleRouting());
     }
@@ -103,6 +104,11 @@ class Slopopedia {
 
         // Update export page selector when pages change
         this.populatePageSelector();
+        
+        // Update network if it's been rendered
+        if (window.location.hash === '#network' && this.networkSvg) {
+            setTimeout(() => this.renderNetwork(), 100);
+        }
 
         // Add click handlers for page cards
         document.querySelectorAll('.page-card').forEach(card => {
@@ -415,6 +421,11 @@ class Slopopedia {
         const activeSection = document.getElementById(sectionId);
         if (activeSection) {
             activeSection.classList.add('active');
+            
+            // Special handling for network section
+            if (sectionId === 'network' && this.pages.length > 0) {
+                setTimeout(() => this.renderNetwork(), 100);
+            }
         }
     }
 
@@ -855,6 +866,253 @@ class Slopopedia {
             .toLowerCase()
             .replace(/[^a-z0-9]+/g, '-')
             .replace(/^-+|-+$/g, '');
+    }
+
+    setupNetwork() {
+        this.networkLayout = 'force';
+        this.networkSvg = null;
+        this.networkSimulation = null;
+        
+        // Set up network controls
+        document.getElementById('layout-force')?.addEventListener('click', () => {
+            this.setNetworkLayout('force');
+        });
+        
+        document.getElementById('layout-circle')?.addEventListener('click', () => {
+            this.setNetworkLayout('circle');
+        });
+        
+        document.getElementById('reset-zoom')?.addEventListener('click', () => {
+            this.resetNetworkView();
+        });
+        
+        // Set default active button
+        document.getElementById('layout-force')?.classList.add('active');
+    }
+    
+    setNetworkLayout(layout) {
+        this.networkLayout = layout;
+        
+        // Update button states
+        document.querySelectorAll('.network-controls button').forEach(btn => {
+            btn.classList.remove('active');
+        });
+        document.getElementById(`layout-${layout}`).classList.add('active');
+        
+        this.renderNetwork();
+    }
+    
+    renderNetwork() {
+        const svg = document.getElementById('network-svg');
+        const container = document.getElementById('network-container');
+        if (!svg || !container || this.pages.length === 0) return;
+        
+        // Clear existing content
+        svg.innerHTML = '';
+        
+        const rect = container.getBoundingClientRect();
+        const width = rect.width;
+        const height = rect.height;
+        
+        // Prepare data
+        const nodes = this.pages.map(page => ({
+            id: page.id,
+            title: page.title,
+            links: page.links || [],
+            linkCount: (page.links || []).length
+        }));
+        
+        const links = [];
+        this.pages.forEach(page => {
+            if (page.links && page.links.length > 0) {
+                page.links.forEach(targetId => {
+                    const target = this.pages.find(p => p.id === targetId);
+                    if (target) {
+                        links.push({
+                            source: page.id,
+                            target: targetId,
+                            sourceTitle: page.title,
+                            targetTitle: target.title
+                        });
+                    }
+                });
+            }
+        });
+        
+        // Create SVG elements
+        const svgEl = d3.select(svg);
+        const g = svgEl.append('g');
+        
+        // Add zoom behavior
+        const zoom = d3.zoom()
+            .scaleExtent([0.1, 4])
+            .on('zoom', (event) => {
+                g.attr('transform', event.transform);
+            });
+        svgEl.call(zoom);
+        
+        // Create links
+        const linkElements = g.selectAll('.network-link')
+            .data(links)
+            .enter().append('line')
+            .attr('class', 'network-link')
+            .style('stroke', '#94a3b8')
+            .style('stroke-width', '1.5px')
+            .style('opacity', 0.6);
+        
+        // Create nodes
+        const nodeElements = g.selectAll('.network-node')
+            .data(nodes)
+            .enter().append('circle')
+            .attr('class', 'network-node')
+            .attr('r', d => Math.max(8, Math.min(20, 8 + d.linkCount * 2)))
+            .style('fill', d => this.getNodeColor(d.linkCount))
+            .style('stroke', '#ffffff')
+            .style('stroke-width', '2px')
+            .style('cursor', 'pointer');
+        
+        // Create labels
+        const labelElements = g.selectAll('.network-node-label')
+            .data(nodes)
+            .enter().append('text')
+            .attr('class', 'network-node-label')
+            .text(d => this.truncateTitle(d.title, 15))
+            .style('font-size', '11px')
+            .style('font-weight', '500')
+            .style('fill', '#1e293b')
+            .style('text-anchor', 'middle')
+            .style('pointer-events', 'none')
+            .style('user-select', 'none');
+        
+        // Add interactions
+        this.addNetworkInteractions(nodeElements, labelElements);
+        
+        // Apply layout
+        if (this.networkLayout === 'force') {
+            this.applyForceLayout(nodes, links, linkElements, nodeElements, labelElements, width, height);
+        } else {
+            this.applyCircleLayout(nodes, linkElements, nodeElements, labelElements, width, height);
+        }
+        
+        // Store references
+        this.networkSvg = svgEl;
+        this.networkZoom = zoom;
+        
+        // Update stats
+        this.updateNetworkStats(nodes, links);
+    }
+    
+    getNodeColor(linkCount) {
+        if (linkCount === 0) return '#e2e8f0';
+        if (linkCount <= 2) return '#93c5fd';
+        if (linkCount <= 4) return '#60a5fa';
+        if (linkCount <= 6) return '#3b82f6';
+        return '#1d4ed8';
+    }
+    
+    truncateTitle(title, maxLength) {
+        return title.length > maxLength ? title.substring(0, maxLength) + '...' : title;
+    }
+    
+    addNetworkInteractions(nodeElements, labelElements) {
+        const tooltip = document.getElementById('node-tooltip');
+        
+        nodeElements
+            .on('mouseover', (event, d) => {
+                if (tooltip) {
+                    tooltip.style.display = 'block';
+                    tooltip.innerHTML = `
+                        <strong>${d.title}</strong><br>
+                        Connections: ${d.linkCount}<br>
+                        <em>Click to view page</em>
+                    `;
+                    tooltip.style.left = (event.pageX + 10) + 'px';
+                    tooltip.style.top = (event.pageY - 10) + 'px';
+                }
+            })
+            .on('mouseout', () => {
+                if (tooltip) {
+                    tooltip.style.display = 'none';
+                }
+            })
+            .on('click', (event, d) => {
+                window.location.hash = `page/${d.id}`;
+            });
+    }
+    
+    applyForceLayout(nodes, links, linkElements, nodeElements, labelElements, width, height) {
+        const simulation = d3.forceSimulation(nodes)
+            .force('link', d3.forceLink(links).id(d => d.id).distance(100))
+            .force('charge', d3.forceManyBody().strength(-200))
+            .force('center', d3.forceCenter(width / 2, height / 2))
+            .force('collision', d3.forceCollide().radius(25));
+        
+        simulation.on('tick', () => {
+            linkElements
+                .attr('x1', d => d.source.x)
+                .attr('y1', d => d.source.y)
+                .attr('x2', d => d.target.x)
+                .attr('y2', d => d.target.y);
+            
+            nodeElements
+                .attr('cx', d => d.x)
+                .attr('cy', d => d.y);
+            
+            labelElements
+                .attr('x', d => d.x)
+                .attr('y', d => d.y + 25);
+        });
+        
+        this.networkSimulation = simulation;
+    }
+    
+    applyCircleLayout(nodes, linkElements, nodeElements, labelElements, width, height) {
+        const centerX = width / 2;
+        const centerY = height / 2;
+        const radius = Math.min(width, height) * 0.3;
+        
+        nodes.forEach((node, i) => {
+            const angle = (2 * Math.PI * i) / nodes.length;
+            node.x = centerX + radius * Math.cos(angle);
+            node.y = centerY + radius * Math.sin(angle);
+        });
+        
+        // Update positions
+        linkElements
+            .attr('x1', d => d.source.x)
+            .attr('y1', d => d.source.y)
+            .attr('x2', d => d.target.x)
+            .attr('y2', d => d.target.y);
+        
+        nodeElements
+            .attr('cx', d => d.x)
+            .attr('cy', d => d.y);
+        
+        labelElements
+            .attr('x', d => d.x)
+            .attr('y', d => d.y + 25);
+    }
+    
+    updateNetworkStats(nodes, links) {
+        const statsElement = document.getElementById('network-stats');
+        if (statsElement) {
+            const avgConnections = nodes.reduce((sum, node) => sum + node.linkCount, 0) / nodes.length;
+            statsElement.innerHTML = `
+                <strong>Network Stats</strong><br>
+                Pages: ${nodes.length}<br>
+                Connections: ${links.length}<br>
+                Avg Links: ${avgConnections.toFixed(1)}
+            `;
+        }
+    }
+    
+    resetNetworkView() {
+        if (this.networkSvg && this.networkZoom) {
+            this.networkSvg.transition().duration(750).call(
+                this.networkZoom.transform,
+                d3.zoomIdentity
+            );
+        }
     }
 
     // Development helpers - these can be called from browser console
