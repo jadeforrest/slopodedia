@@ -3,7 +3,7 @@
 class Slopopedia {
     constructor() {
         this.pages = this.loadPages();
-        this.currentSession = 5; // Claude sessions that have committed changes
+        this.currentSession = 6; // Claude sessions that have committed changes
         this.init();
     }
 
@@ -13,6 +13,7 @@ class Slopopedia {
         this.loadFileBasedPages();
         this.renderPages();
         this.setupRandomPage();
+        this.setupSearch();
         this.handleInitialRoute();
         window.addEventListener('hashchange', () => this.handleRouting());
     }
@@ -117,6 +118,85 @@ class Slopopedia {
                 this.displayRandomPage(randomPage);
             }, 100);
         });
+    }
+
+    setupSearch() {
+        const searchInput = document.getElementById('search-input');
+        const searchButton = document.getElementById('search-button');
+        const searchResults = document.getElementById('search-results');
+        
+        const performSearch = () => {
+            const query = searchInput.value.trim();
+            if (!query) {
+                searchResults.innerHTML = '<p class="empty-state">Enter a search term to find pages.</p>';
+                return;
+            }
+            
+            const results = this.searchPages(query);
+            this.displaySearchResults(results, query);
+        };
+        
+        searchButton.addEventListener('click', performSearch);
+        searchInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                performSearch();
+            }
+        });
+        
+        // Auto-search as user types (with debounce)
+        let searchTimeout;
+        searchInput.addEventListener('input', () => {
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(() => {
+                if (searchInput.value.trim().length > 0) {
+                    performSearch();
+                }
+            }, 300);
+        });
+    }
+
+    displaySearchResults(results, query) {
+        const searchResults = document.getElementById('search-results');
+        
+        if (results.length === 0) {
+            searchResults.innerHTML = `<p class="empty-state">No pages found for "${query}".</p>`;
+            return;
+        }
+        
+        searchResults.innerHTML = `
+            <p class="search-summary">${results.length} page${results.length === 1 ? '' : 's'} found for "${query}":</p>
+            <div class="search-results-list">
+                ${results.map(page => `
+                    <div class="search-result" data-page-id="${page.id}">
+                        <h3>${this.highlightSearchTerm(page.title, query)}</h3>
+                        <p>${this.highlightSearchTerm(page.excerpt || this.stripHtml(page.content).substring(0, 150) + '...', query)}</p>
+                        <div class="page-meta">
+                            <span>Updated: ${new Date(page.updated).toLocaleDateString()}</span>
+                            <span>Links: ${page.links ? page.links.length : 0}</span>
+                        </div>
+                    </div>
+                `).join('')}
+            </div>
+        `;
+        
+        // Add click handlers for search results
+        document.querySelectorAll('.search-result').forEach(result => {
+            result.addEventListener('click', () => {
+                const pageId = result.getAttribute('data-page-id');
+                window.location.hash = `page/${pageId}`;
+            });
+        });
+    }
+    
+    highlightSearchTerm(text, query) {
+        const regex = new RegExp(`(${query})`, 'gi');
+        return text.replace(regex, '<mark>$1</mark>');
+    }
+    
+    stripHtml(html) {
+        const div = document.createElement('div');
+        div.innerHTML = html;
+        return div.textContent || div.innerText || '';
     }
 
     displayRandomPage(page) {
