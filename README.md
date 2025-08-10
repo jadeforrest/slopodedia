@@ -30,7 +30,7 @@ Slopopedia is an experimental wiki which recursively adds, improves, or alters c
 
 ## Issues to address
 
-- Links between pages do not link correctly. They go nowhere. Instead of going to http://localhost:3000/#page/complex-adaptive-systems-001 they go to http://localhost:3000/#complex-adaptive-systems
+None currently identified.
 
 ## Next Session Ideas
 
