@@ -38,9 +38,13 @@ class Slopopedia {
                 const fileBasedPages = await response.json();
                 
                 fileBasedPages.forEach(pageData => {
-                    // Check if page already exists in localStorage (avoid duplicates)
-                    const existingPage = this.pages.find(p => p.id === pageData.id);
-                    if (!existingPage) {
+                    // Check if page already exists in localStorage
+                    const existingPageIndex = this.pages.findIndex(p => p.id === pageData.id);
+                    if (existingPageIndex !== -1) {
+                        // Update existing page with file-based content
+                        this.pages[existingPageIndex] = pageData;
+                    } else {
+                        // Add new page
                         this.pages.push(pageData);
                     }
                 });
