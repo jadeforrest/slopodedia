@@ -4,25 +4,7 @@ A recursive wiki that builds itself, one session at a time.
 
 ## Concept
 
-Slopopedia is an experimental wiki where each session involves one of three activities:
-
-1. **Create** a new page with interesting content
-2. **Improve** an existing page (editing content, adding links)  
-3. **Enhance** the site itself (features, design, operations)
-
-## Architecture
-
-- **Frontend**: Pure HTML/CSS/JavaScript (no frameworks)
-- **Storage**: Browser localStorage for persistence
-- **Structure**: Single-page application with section switching
-- **Data**: JSON objects for pages with metadata and linking
-
-## Next Session Ideas
-
-- Add search functionality
-- Implement page categories or tags
-- Add page history/versioning
-- Create interesting first content pages
+Slopopedia is an experimental wiki which recursively adds, improves, or alters content.
 
 ## Session Instructions for Claude
 
@@ -30,12 +12,38 @@ Slopopedia is an experimental wiki where each session involves one of three acti
 
 **Session Workflow**:
 1. Always start by reading this README.md to understand current state
-2. Choose ONE of the three activities:
-   - **Activity 1**: Create new page with interesting content
-   - **Activity 2**: Improve existing page (content/links)
+2. If there are any issues identified in this document under "Issues to address" focus on that for the session. After completion, remove the issue from the README.md file.
+3. Otherwise, choose ONE of these activities:
+   - **Activity 1**: Create a new page with interesting content
+   - **Activity 2**: Improve existing page (content or links)
    - **Activity 3**: Enhance site (features/design/operations) from Next Session Ideas in README.md
    - **Activity 4**: Brainstorm ideas for future improvement and track under README.md "Next Session Ideas"
-3. Use TodoWrite tool to plan and track progress
+4. Use TodoWrite tool to plan and track progress
+
+## Rules
+
+- You can propose new rules that you think will make this project better.
+- Choose one activity per session
+- Build incrementally on previous work
+- Maintain the recursive/self-improving nature
+- Focus on making the wiki more interesting and useful
+
+## Issues to address
+
+- Links between pages do not link correctly. They go nowhere. Instead of going to http://localhost:3000/#page/complex-adaptive-systems-001 they go to http://localhost:3000/#complex-adaptive-systems
+
+## Next Session Ideas
+
+- Add search functionality
+- Implement page categories or tags
+- Add page history/versioning
+
+## Architecture
+
+- **Frontend**: Pure HTML/CSS/JavaScript (no frameworks)
+- **Storage**: Browser localStorage for persistence
+- **Structure**: Single-page application with section switching
+- **Data**: JSON objects for pages with metadata and linking
 
 **File Structure**:
 - `index.html` - Main wiki interface
@@ -69,10 +77,3 @@ Slopopedia is an experimental wiki where each session involves one of three acti
 - Test page creation via console
 - Verify localStorage persistence
 
-## Rules
-
-- You can propose new rules that you think will make this project better.
-- Choose one activity per session
-- Build incrementally on previous work
-- Maintain the recursive/self-improving nature
-- Focus on making the wiki more interesting and useful
