@@ -47,12 +47,6 @@ None currently identified.
 - Create breadcrumb navigation for page traversal history
 - Add "related pages" suggestions based on content similarity
 
-**Collaborative Features**:
-- Add page discussion/comment system stored in localStorage
-- Implement page bookmarking and personal collections
-- Create user-specific page creation/edit history
-- Add collaborative filtering for content recommendations
-
 **Visual & UX Enhancements**:
 - Implement dark mode toggle for better accessibility
 - Add page thumbnails/previews for visual navigation
@@ -63,7 +57,6 @@ None currently identified.
 - Add content templates for common page types
 - Implement automated link detection and suggestion
 - Create content archival system for old/deprecated pages
-- Add bulk operations for page management
 
 **Analytics & Insights**:
 - Track page view counts and popular content metrics
