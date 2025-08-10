@@ -35,7 +35,6 @@ None currently identified.
 
 ## Next Session Ideas
 
-- Implement page categories or tags
 - Add page history/versioning
 
 ## Architecture

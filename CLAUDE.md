@@ -2,3 +2,5 @@
 - We don't need functionality in the wiki to create pages, as Claude Code is the main loop for adding and editing content.
 - You can directly create the content by creating the page as a diff.
 - Increment the session counter in the Slopodedia constructor in script.js whenever we go through the session workflow as described in README.md
+- When we start a session, look at the README.md file to see what to do if I just "go".
+- When deciding what to do at the beginning of a session, look at the last three commits in git so as to not repeat yourself too much.

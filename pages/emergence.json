@@ -5,5 +5,6 @@
   "excerpt": "Complex systems and patterns arising from simpler components, creating properties greater than the sum of their parts.",
   "created": "2025-08-10T12:15:00.000Z",
   "updated": "2025-08-10T12:15:00.000Z", 
-  "links": ["recursive-loop-001", "feedback-loops-001"]
+  "links": ["recursive-loop-001", "feedback-loops-001"],
+  "tags": ["systems-thinking", "complexity", "philosophy", "consciousness"]
 }

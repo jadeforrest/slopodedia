@@ -3,7 +3,7 @@
 class Slopopedia {
     constructor() {
         this.pages = this.loadPages();
-        this.currentSession = 7; // Claude sessions that have committed changes
+        this.currentSession = 8; // Claude sessions that have committed changes
         this.init();
     }
 
@@ -87,6 +87,11 @@ class Slopopedia {
             <div class="page-card" data-page-id="${page.id}">
                 <h3>${page.title}</h3>
                 <p>${page.excerpt || page.content.substring(0, 150) + '...'}</p>
+                ${page.tags && page.tags.length > 0 ? `
+                <div class="page-tags">
+                    ${page.tags.map(tag => `<span class="tag" data-tag="${tag}">${tag}</span>`).join('')}
+                </div>
+                ` : ''}
                 <div class="page-meta">
                     <span>Created: ${new Date(page.created).toLocaleDateString()}</span>
                     <span>Links: ${page.links ? page.links.length : 0}</span>
@@ -96,10 +101,75 @@ class Slopopedia {
 
         // Add click handlers for page cards
         document.querySelectorAll('.page-card').forEach(card => {
-            card.addEventListener('click', () => {
+            card.addEventListener('click', (e) => {
+                // Don't navigate if clicking on a tag
+                if (e.target.classList.contains('tag')) {
+                    return;
+                }
                 const pageId = card.getAttribute('data-page-id');
                 window.location.hash = `page/${pageId}`;
             });
+        });
+        
+        // Add click handlers for tags
+        document.querySelectorAll('.tag').forEach(tag => {
+            tag.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const tagName = tag.getAttribute('data-tag');
+                this.filterByTag(tagName);
+            });
+        });
+    }
+    
+    filterByTag(tagName) {
+        const filteredPages = this.pages.filter(page => 
+            page.tags && page.tags.includes(tagName)
+        );
+        
+        const pagesList = document.getElementById('pages-list');
+        pagesList.innerHTML = `
+            <div class="tag-filter-header">
+                <h3>Pages tagged with "${tagName}" (${filteredPages.length})</h3>
+                <button class="clear-filter-btn">Show All Pages</button>
+            </div>
+            ${filteredPages.map(page => `
+                <div class="page-card" data-page-id="${page.id}">
+                    <h3>${page.title}</h3>
+                    <p>${page.excerpt || page.content.substring(0, 150) + '...'}</p>
+                    ${page.tags && page.tags.length > 0 ? `
+                    <div class="page-tags">
+                        ${page.tags.map(tag => `<span class="tag ${tag === tagName ? 'tag-active' : ''}" data-tag="${tag}">${tag}</span>`).join('')}
+                    </div>
+                    ` : ''}
+                    <div class="page-meta">
+                        <span>Created: ${new Date(page.created).toLocaleDateString()}</span>
+                        <span>Links: ${page.links ? page.links.length : 0}</span>
+                    </div>
+                </div>
+            `).join('')}
+        `;
+        
+        // Re-add event handlers
+        document.querySelectorAll('.page-card').forEach(card => {
+            card.addEventListener('click', (e) => {
+                if (e.target.classList.contains('tag')) {
+                    return;
+                }
+                const pageId = card.getAttribute('data-page-id');
+                window.location.hash = `page/${pageId}`;
+            });
+        });
+        
+        document.querySelectorAll('.tag').forEach(tag => {
+            tag.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const tagName = tag.getAttribute('data-tag');
+                this.filterByTag(tagName);
+            });
+        });
+        
+        document.querySelector('.clear-filter-btn').addEventListener('click', () => {
+            this.renderPages();
         });
     }
 
@@ -315,6 +385,11 @@ class Slopopedia {
                 <article class="page-article">
                     <header>
                         <h1>${page.title}</h1>
+                        ${page.tags && page.tags.length > 0 ? `
+                        <div class="page-tags">
+                            ${page.tags.map(tag => `<span class="tag" data-tag="${tag}">${tag}</span>`).join('')}
+                        </div>
+                        ` : ''}
                         <div class="page-meta">
                             <span>Created: ${new Date(page.created).toLocaleDateString()}</span>
                             <span>Updated: ${new Date(page.updated).toLocaleDateString()}</span>
@@ -326,6 +401,15 @@ class Slopopedia {
                     </div>
                 </article>
             `;
+            
+            // Add click handlers for tags in page view
+            document.querySelectorAll('#page-content .tag').forEach(tag => {
+                tag.addEventListener('click', () => {
+                    const tagName = tag.getAttribute('data-tag');
+                    window.location.hash = 'pages';
+                    setTimeout(() => this.filterByTag(tagName), 100);
+                });
+            });
         }
     }
 

@@ -5,5 +5,6 @@
   "excerpt": "Networks of interacting agents that evolve and adapt, displaying non-linear behaviors and self-organization.",
   "created": "2025-08-10T16:30:00.000Z",
   "updated": "2025-08-10T16:30:00.000Z",
-  "links": ["emergence-001", "recursive-loop-001", "feedback-loops-001"]
+  "links": ["emergence-001", "recursive-loop-001", "feedback-loops-001"],
+  "tags": ["systems-thinking", "complexity", "biology", "networks"]
 }
